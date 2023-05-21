@@ -1,0 +1,91 @@
+{% extends './base.html' %}
+
+{% block title %}Estados{% endblock %}
+
+{% block body %}
+<div class="conteiner text-center">
+    {% for estado in estados %}
+    <div class="row m-2">
+        <div class="col-6">{{ estado[1] }}</div>
+        <div class="col">{% if estado[2]: %}Activo{% else %}Inactivo {% endif %}</div>
+        <div class="col">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editar" data-bs-id="{{ estado[0] }}" data-bs-name="{{ estado[1] }}" data-bs-state="{{ estado[2] }}">Editar</button>
+        </div>
+        <div class="col">delete</div>
+    </div>
+    {% endfor %}
+    <div class="row m-2">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <form action="/new-estado" method="post" class="">
+                <div class="row">
+                    <div class="col-4"><input type="text" class="form-control" name="name" placeholder="Estado" /></div>
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-primary" >Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editar" tabindex="-1" aria-labelledby="editarLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editarLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formulario" action="" method="post">
+          <div class="mb-3">
+            <label for="update-name" class="col-form-label">Estado:</label>
+            <input type="text" class="form-control" id="update-name" name="update-name">
+          </div>
+          <div class="mb-3">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="activo" autocomplete="off">
+                <label class="btn btn-outline-success" for="activo">Activo</label>
+              
+                <input type="radio" class="btn-check" name="btnradio" id="inactivo" autocomplete="off">
+                <label class="btn btn-outline-danger" for="inactivo">Inactivo</label>
+              </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Actualizar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    const exampleModal = document.getElementById('editar');
+    if (exampleModal) {
+        exampleModal.addEventListener('show.bs.modal', event => {
+            // Button that triggered the modal
+            const button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            const id = button.getAttribute('data-bs-id')
+            const name = button.getAttribute('data-bs-name')
+            const state = button.getAttribute('data-bs-state')
+
+            if (state == 1) {
+                exampleModal.querySelector('#activo').setAttribute('checked', '')
+            } else {
+                exampleModal.querySelector('#inactivo').setAttribute('checked', '')
+            }
+            // If necessary, you could initiate an Ajax request here
+            // and then do the updating in a callback.
+
+            // Update the modal's content.
+            const modalTitle = exampleModal.querySelector('.modal-title')
+            const modalBodyInput = exampleModal.querySelector('.modal-body input')
+            const form = exampleModal.querySelector('#formulario')
+
+            modalTitle.textContent = `Actualizar ${name}`
+            modalBodyInput.value = name
+            form.setAttribute('action', `/update-estado/${id}`)
+        })
+    }
+</script>
+{% endblock %}

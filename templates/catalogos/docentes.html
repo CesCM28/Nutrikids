@@ -1,0 +1,32 @@
+{% extends './base.html' %}
+
+{% block title %}Estados{% endblock %}
+
+{% block menu %}
+<ul class="nav justify-content-center">
+    <li class="nav-item">
+        <a class="nav-link" href="#">Menu 1</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Menu 2</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block body %}
+<div class="conteiner">
+    {% for docente in docentes %}
+    <div class="row">
+        <div class="col-3">{{ docente[1] }}</div>
+        <div class="col-3">{{ docente[2] }}</div>
+        <div class="col">{% if docente[3]: %}Activo{% else %}Inactivo {% endif %}</div>
+        <div class="col">edit</div>
+        <div class="col">delete</div>
+    </div>
+    {% endfor %}
+    
+</div>
+{% endblock %}
