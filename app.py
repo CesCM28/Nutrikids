@@ -194,12 +194,11 @@ def updateColonia(id):
     return redirect(url_for('colonias'))
 
 #++++++++++++++++++++ Escuelas ++++++++++++++++++++
-#TODO: registrar y editar
 @app.route('/escuelas')
 @login_required
 def escuelas():
     cursor = db.connection.cursor()
-    sql = """SELECT e.id, e.name, c.name, e.street, e.number, e.cp, e.state FROM escuela e 
+    sql = """SELECT e.id, e.name, c.name, e.street, e.number, e.cp, e.state, e.idColonia FROM escuela e 
     INNER JOIN colonia c ON c.id = e.idColonia"""
     cursor.execute(sql)
     escuelas = cursor.fetchall()
@@ -209,6 +208,41 @@ def escuelas():
     colonias = cursor.fetchall()
 
     return render_template('catalogos/escuelas.html', escuelas=escuelas, colonias=colonias)
+
+@app.route('/new-escuela', methods=['POST'])
+@login_required
+def newEscuela():
+    cursor = db.connection.cursor()
+    name = request.form['name']
+    idColonia = request.form.get('colonia')
+    street = request.form['calle']
+    number = request.form['numero']
+    cp = request.form['cp']
+    if request.method == 'POST':
+        sqlIns = 'INSERT INTO escuela (name, idColonia, street, number, cp) VALUES ("{}", {}, "{}", "{}", "{}")'.format(name, idColonia, street, number, cp)
+        cursor.execute(sqlIns)
+        db.connection.commit()
+
+    return redirect(url_for('escuelas'))
+
+
+@app.route('/update-escuela/<int:id>', methods=['POST'])
+@login_required
+def updateEscuela(id):
+    cursor = db.connection.cursor()
+    name = request.form['update-name']
+    state = request.form.get('btnradio')
+    idColonia = request.form.get('inputColonia')
+    street = request.form['update-street']
+    number = request.form['update-number']
+    cp = request.form['update-cp']
+    if request.method == 'POST':
+        sqlIns = """UPDATE escuela SET name = "{}", idColonia = {}, street = "{}", number = "{}", cp = "{}", state = {}
+                    WHERE id = {}""".format(name, idColonia, street, number, cp, state, id)
+        cursor.execute(sqlIns)
+        db.connection.commit()
+
+    return redirect(url_for('escuelas'))
 
 #++++++++++++++++++++ Docentes ++++++++++++++++++++
 #TODO: consultar, registrar y editar, asi como la creación de la tabla
