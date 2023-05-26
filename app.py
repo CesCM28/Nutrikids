@@ -245,7 +245,7 @@ def updateEscuela(id):
     return redirect(url_for('escuelas'))
 
 #++++++++++++++++++++ Docentes ++++++++++++++++++++
-#TODO: consultar, registrar y editar, asi como la creación de la tabla
+#TODO: editar, asi como la creación de la tabla
 @app.route('/docentes')
 @login_required
 def docentes():
@@ -273,6 +273,27 @@ def docentes():
 
     return render_template('catalogos/docentes.html', docentes=docentes, escuelas=escuelas, puestos=puestos, generos=generos)
 
+
+@app.route('/new-docente', methods=['POST'])
+@login_required
+def newDocente():
+    cursor = db.connection.cursor()
+    names = request.form['newNames']
+    lastName = request.form['newLastName']
+    secondLastName = request.form['newSecondLastName']
+    edad = request.form['newEdad']
+    idGenero = request.form.get('newGenero')
+    idPuesto = request.form.get('NewPuesto')
+    idEscuela = request.form.get('NewEscuela')
+
+    if request.method == 'POST':
+        sqlIns = """INSERT INTO docente (names, lastName, secondLastName, edad, idGender, idPosition, idEscuela) 
+        VALUES ("{}", "{}", "{}", {}, {}, {}, {})""".format(names, lastName, secondLastName, edad, idGenero, idPuesto, idEscuela)
+        print(sqlIns)
+        cursor.execute(sqlIns)
+        db.connection.commit()
+
+    return redirect(url_for('docentes'))
 
 #++++++++++++++++++++ Alumnos ++++++++++++++++++++
 
