@@ -45,93 +45,93 @@
 
 <div class="modal fade" id="editar" tabindex="-1" aria-labelledby="editarLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="editarLabel"></h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editarLabel"></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario" action="" method="post">
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="update-name" class="col-form-label">Municipio:</label>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" id="update-name" name="update-name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="inputMunicipio">Municipio</label>
+                            <select class="form-select" id="inputMunicipio" name="inputMunicipio">
+                            {% for municipio in municipios %}
+                            <option value="{{ municipio[0] }}">{{ municipio[1] }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="update-cp" class="col-form-label">CP:</label>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" id="update-cp" name="update-cp">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="btnradio" id="activo" autocomplete="off" value="true">
+                            <label class="btn btn-outline-success" for="activo">Activo</label>
+                            
+                            <input type="radio" class="btn-check" name="btnradio" id="inactivo" autocomplete="off" value="false">
+                            <label class="btn btn-outline-danger" for="inactivo">Inactivo</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </form>
+            </div>
         </div>
-        <div class="modal-body">
-          <form id="formulario" action="" method="post">
-            <div class="mb-3">
-                <div class="row">
-                    <div class="col-2">
-                        <label for="update-name" class="col-form-label">Municipio:</label>
-                    </div>
-                    <div class="col">
-                        <input type="text" class="form-control" id="update-name" name="update-name">
-                    </div>
-                </div>
-            </div>
-            <div class="mb-3">
-                <div class="input-group">
-                    <label class="input-group-text" for="inputMunicipio">Municipio</label>
-                    <select class="form-select" id="inputMunicipio" name="inputMunicipio">
-                    {% for municipio in municipios %}
-                      <option value="{{ municipio[0] }}">{{ municipio[1] }}</option>
-                    {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="mb-3">
-                <div class="row">
-                    <div class="col-2">
-                        <label for="update-cp" class="col-form-label">CP:</label>
-                    </div>
-                    <div class="col">
-                        <input type="text" class="form-control" id="update-cp" name="update-cp">
-                    </div>
-                </div>
-            </div>
-            <div class="mb-3">
-              <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                  <input type="radio" class="btn-check" name="btnradio" id="activo" autocomplete="off" value="true">
-                  <label class="btn btn-outline-success" for="activo">Activo</label>
-                
-                  <input type="radio" class="btn-check" name="btnradio" id="inactivo" autocomplete="off" value="false">
-                  <label class="btn btn-outline-danger" for="inactivo">Inactivo</label>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Actualizar</button>
-          </form>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
   
-  <script>
-      const exampleModal = document.getElementById('editar');
-      if (exampleModal) {
-          exampleModal.addEventListener('show.bs.modal', event => {
-              // Button that triggered the modal
-              const button = event.relatedTarget
-              // Extract info from data-bs-* attributes
-              const id = button.getAttribute('data-bs-id')
-              const name = button.getAttribute('data-bs-name')
-              const name2 = button.getAttribute('data-bs-name2')
-              const cp = button.getAttribute('data-bs-cp')
-              const state = button.getAttribute('data-bs-state')
-  
-              if (state == 1) {
-                  exampleModal.querySelector('#activo').setAttribute('checked', '')
-              } else {
-                  exampleModal.querySelector('#inactivo').setAttribute('checked', '')
-              }
-              // If necessary, you could initiate an Ajax request here
-              // and then do the updating in a callback.
-  
-              // Update the modal's content.
-              const modalTitle = exampleModal.querySelector('.modal-title')
-              const nameInput = exampleModal.querySelector('.modal-body input')
-              const nameDropdown = exampleModal.querySelector('#inputMunicipio')
-              const nameCP = exampleModal.querySelector('#update-cp')
-              const form = exampleModal.querySelector('#formulario')
-  
-              modalTitle.textContent = `Actualizar ${name}`
-              nameInput.value = name
-              nameDropdown.value = name2
-              nameCP.value = cp
-              form.setAttribute('action', `/update-colonia/${id}`)
-          })
-      }
-  </script>
+<script>
+    const exampleModal = document.getElementById('editar');
+    if (exampleModal) {
+        exampleModal.addEventListener('show.bs.modal', event => {
+            // Button that triggered the modal
+            const button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            const id = button.getAttribute('data-bs-id')
+            const name = button.getAttribute('data-bs-name')
+            const name2 = button.getAttribute('data-bs-name2')
+            const cp = button.getAttribute('data-bs-cp')
+            const state = button.getAttribute('data-bs-state')
+
+            if (state == 1) {
+                exampleModal.querySelector('#activo').setAttribute('checked', '')
+            } else {
+                exampleModal.querySelector('#inactivo').setAttribute('checked', '')
+            }
+            // If necessary, you could initiate an Ajax request here
+            // and then do the updating in a callback.
+
+            // Update the modal's content.
+            const modalTitle = exampleModal.querySelector('.modal-title')
+            const nameInput = exampleModal.querySelector('.modal-body input')
+            const nameDropdown = exampleModal.querySelector('#inputMunicipio')
+            const nameCP = exampleModal.querySelector('#update-cp')
+            const form = exampleModal.querySelector('#formulario')
+
+            modalTitle.textContent = `Actualizar ${name}`
+            nameInput.value = name
+            nameDropdown.value = name2
+            nameCP.value = cp
+            form.setAttribute('action', `/update-colonia/${id}`)
+        })
+    }
+</script>
 {% endblock %}

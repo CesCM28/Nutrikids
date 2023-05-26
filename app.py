@@ -250,13 +250,28 @@ def updateEscuela(id):
 @login_required
 def docentes():
     cursor = db.connection.cursor()
-    sql = """SELECT m.id, m.name, e.name, m.state FROM municipio m 
-    INNER JOIN estados e ON e.id = m.idEstado"""
+    sql = """SELECT d.id,d.names,d.lastName,d.secondLastName,d.edad,d.state,d.idEscuela,d.idPosition,d.idGender
+    FROM docente d 
+    INNER JOIN escuela e ON e.id = d.idEscuela
+    INNER JOIN puesto p ON p.id = d.idPosition
+    INNER JOIN genero g ON g.id = d.idGender;
+    """
     cursor.execute(sql)
     docentes = cursor.fetchall()
-    print(estados)
 
-    return render_template('catalogos/docentes.html', docentes=docentes)
+    sql = "SELECT id,name FROM escuela WHERE state = 1"
+    cursor.execute(sql)
+    escuelas = cursor.fetchall()
+
+    sql = "SELECT id,name FROM puesto WHERE state = 1"
+    cursor.execute(sql)
+    puestos = cursor.fetchall()
+
+    sql = "SELECT id,name FROM genero WHERE state = 1"
+    cursor.execute(sql)
+    generos = cursor.fetchall()
+
+    return render_template('catalogos/docentes.html', docentes=docentes, escuelas=escuelas, puestos=puestos, generos=generos)
 
 
 #++++++++++++++++++++ Alumnos ++++++++++++++++++++

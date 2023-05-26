@@ -32,7 +32,47 @@ CREATE TABLE escuela (
     number varchar(10) NOT NULL,
     state tinyint(1) default 1,
     PRIMARY KEY (id)
-); 
+);
+
+-- Creación de la tabla puesto
+CREATE TABLE puesto (
+    id smallint NOT NULL AUTO_INCREMENT,
+    name varchar(50) NOT NULL,
+    state tinyint(1) default 1,
+    PRIMARY KEY (id)
+);
+
+-- Insert de la tabla puesto
+INSERT INTO puesto (name) VALUES ("Director");
+INSERT INTO puesto (name) VALUES ("Profesor");
+
+-- Creación de la tabla puesto
+CREATE TABLE genero (
+    id smallint NOT NULL AUTO_INCREMENT,
+    name varchar(50) NOT NULL,
+    state tinyint(1) default 1,
+    PRIMARY KEY (id)
+);
+
+-- Insert de la tabla puesto
+INSERT INTO genero (name) VALUES ("Femenino");
+INSERT INTO genero (name) VALUES ("Masculino");
+
+-- Creación de la table de docente
+-- esta realcionada con escuela, puesto y genero
+
+CREATE TABLE docente (
+    id int NOT NULL AUTO_INCREMENT,
+    idEscuela int, --
+    idPosition smallint, --
+    idGender smallint, --
+    names varchar(100),
+    lastName varchar(50),
+    secondLastName varchar(50),
+    edad number,
+    state tinyint(1) default 1,
+    PRIMARY KEY (id)
+);
 
 -- Volcado de datos para la tabla user
 
