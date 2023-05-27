@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 from flask_login import LoginManager, login_user, logout_user, login_required
+import json 
+from math import pow
 
 from config import config
 
@@ -245,7 +247,6 @@ def updateEscuela(id):
     return redirect(url_for('escuelas'))
 
 #++++++++++++++++++++ Docentes ++++++++++++++++++++
-#TODO: editar, asi como la creación de la tabla
 @app.route('/docentes')
 @login_required
 def docentes():
@@ -295,8 +296,60 @@ def newDocente():
 
     return redirect(url_for('docentes'))
 
+
+@app.route('/update-docente/<int:id>', methods=['POST'])
+@login_required
+def updateDocente(id):
+    cursor = db.connection.cursor()
+    names = request.form['updateNames']
+    lastName = request.form['updateLastName']
+    secondLastName = request.form['updateSecondLastName']
+    edad = request.form['updateEdad']
+    idGenero = request.form.get('updateGenero')
+    idPuesto = request.form.get('updatePuesto')
+    idEscuela = request.form.get('updateEscuela')
+    state = request.form.get('btnradio')
+
+    if request.method == 'POST':
+        sql = """update docente set names = "{}", lastName = "{}", secondLastName = "{}",
+                    edad = {}, idGender = {}, idPosition = {}, idEscuela = {}, state = {} where id = {}
+                    """.format(names, lastName, secondLastName, edad, idGenero, idPuesto, idEscuela, state, id)
+        cursor.execute(sql)
+        db.connection.commit()
+
+    return redirect(url_for('docentes'))
+
 #++++++++++++++++++++ Alumnos ++++++++++++++++++++
 
+
+#++++++++++++++++++++ Graficas ++++++++++++++++++++
+@app.route('/grafica')
+@login_required
+def grafica():
+    #kg / estatura en metos al cuadrado
+    #imc = kg / pow(estaturaMetros, 2)
+
+    variable = {
+        'label': 'Uno',
+        'data': [19.5,19,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+        'fill': False,
+        'borderColor': 'rgb(75, 192, 192)',
+        'tension': 0.1
+    }
+
+    dataset = {
+        'label': 'Otro',
+        'data': [19,18,17,18,19,2,2,2,2,2,2,2,2,2,2,2],
+        'fill': False,
+        'borderColor': 'rgb(75, 0, 192)',
+        'tension': 0.1
+    }
+
+    return render_template('graficas/grafica.html', 
+                           variable=json.dumps(variable),
+                           dataset2=json.dumps(dataset))
+
+#++++++++++++++++++++ Graficas ++++++++++++++++++++
 
 def status_401(error):
     return redirect(url_for('login'))

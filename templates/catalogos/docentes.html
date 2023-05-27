@@ -18,7 +18,18 @@
         <div class="col">{{ docente[3] }}</div>
         <div class="col">{% if docente[5]: %}Activo{% else %}Inactivo {% endif %}</div>
         <div class="col">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editar">Actualizar</button> 
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editar"
+                data-bs-id="{{ docente[0] }}"
+                data-bs-names="{{ docente[1] }}"
+                data-bs-ln="{{ docente[2] }}"
+                data-bs-sln="{{ docente[3] }}"
+                data-bs-edad="{{ docente[4] }}"
+                data-bs-state="{{ docente[5] }}"
+                data-bs-idescuela="{{ docente[6] }}"
+                data-bs-idpuesto="{{ docente[7] }}"
+                data-bs-idgenero="{{ docente[8] }}">
+                Actualizar
+            </button> 
         </div>
     </div>
     {% endfor %}
@@ -104,15 +115,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                            <input type="radio" class="btn-check" name="btnradio" id="activo" autocomplete="off" value="true">
-                            <label class="btn btn-outline-success" for="activo">Activo</label>
-                            
-                            <input type="radio" class="btn-check" name="btnradio" id="inactivo" autocomplete="off" value="false">
-                            <label class="btn btn-outline-danger" for="inactivo">Inactivo</label>
-                        </div>
-                    </div>
                     <button type="submit" class="btn btn-success">Registrar</button>
                 </form>
             </div>
@@ -128,7 +130,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formulario" action="/update-docente" method="post">
+                <form id="updateFormulario" action="" method="post">
                     <div class="mb-3">
                         <div class="row">
                             <div class="col-4">
@@ -171,8 +173,8 @@
                     </div>
                     <div class="mb-3">
                         <div class="input-group">
-                            <label class="input-group-text" for="inputGenero">Genero</label>
-                            <select class="form-select" id="Genero" name="Genero">
+                            <label class="input-group-text" for="updateGenero">Genero</label>
+                            <select class="form-select" id="updateGenero" name="updateGenero">
                             {% for genero in generos %}
                             <option value="{{ genero[0] }}">{{ genero[1] }}</option>
                             {% endfor %}
@@ -181,8 +183,8 @@
                     </div>
                     <div class="mb-3">
                         <div class="input-group">
-                            <label class="input-group-text" for="inputEscuela">Escuela</label>
-                            <select class="form-select" id="Escuela" name="Escuela">
+                            <label class="input-group-text" for="updateEscuela">Escuela</label>
+                            <select class="form-select" id="updateEscuela" name="updateEscuela">
                             {% for escuela in escuelas %}
                             <option value="{{ escuela[0] }}">{{ escuela[1] }}</option>
                             {% endfor %}
@@ -191,8 +193,8 @@
                     </div>
                     <div class="mb-3">
                         <div class="input-group">
-                            <label class="input-group-text" for="inputPuesto">Puesto</label>
-                            <select class="form-select" id="puesto" name="puesto">
+                            <label class="input-group-text" for="updatePuesto">Puesto</label>
+                            <select class="form-select" id="updatePuesto" name="updatePuesto">
                             {% for puesto in puestos %}
                             <option value="{{ puesto[0] }}">{{ puesto[1] }}</option>
                             {% endfor %}
@@ -214,4 +216,55 @@
         </div>
     </div>
 </div>
+
+<script>
+    const exampleModal = document.getElementById('editar');
+    if (exampleModal) {
+        exampleModal.addEventListener('show.bs.modal', event => {
+            // Button that triggered the modal
+            const button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            const id = button.getAttribute('data-bs-id')
+            const names = button.getAttribute('data-bs-names')
+            const ln = button.getAttribute('data-bs-ln')
+            const sln = button.getAttribute('data-bs-sln')
+            const edad = button.getAttribute('data-bs-edad')
+            const state = button.getAttribute('data-bs-state')
+            const idEscuela = button.getAttribute('data-bs-idescuela')
+            const idPuesto = button.getAttribute('data-bs-idpuesto')
+            const idGenero = button.getAttribute('data-bs-idgenero')
+
+            console.log(state)
+
+            if (state == 1) {
+                exampleModal.querySelector('#activo').setAttribute('checked', '')
+            } else {
+                exampleModal.querySelector('#inactivo').setAttribute('checked', '')
+            }
+            // If necessary, you could initiate an Ajax request here
+            // and then do the updating in a callback.
+
+            // Update the modal's content.
+            const modalTitle = exampleModal.querySelector('.modal-title')
+            const inputNames = exampleModal.querySelector('#updateNames')
+            const inputLN = exampleModal.querySelector('#updateLastName')
+            const inputSLN = exampleModal.querySelector('#updateSecondLastName')
+            const inputEdad = exampleModal.querySelector('#updateEdad')
+            const inputEscuela = exampleModal.querySelector('#updateEscuela')
+            const inputPuesto = exampleModal.querySelector('#updatePuesto')
+            const inputGenero = exampleModal.querySelector('#updateGenero')
+            const form = exampleModal.querySelector('#updateFormulario')
+
+            modalTitle.textContent = `Actualizar ${names}`
+            inputNames.value = names
+            inputLN.value = ln
+            inputSLN.value = sln
+            inputEdad.value = edad
+            inputEscuela.value = idEscuela
+            inputPuesto.value = idPuesto
+            inputGenero.value = idGenero
+            form.setAttribute('action', `/update-docente/${id}`)
+        })
+    }
+</script>
 {% endblock %}
