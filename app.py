@@ -320,7 +320,77 @@ def updateDocente(id):
     return redirect(url_for('docentes'))
 
 #++++++++++++++++++++ Alumnos ++++++++++++++++++++
+@app.route('/niños')
+@login_required
+def ninos():
+    cursor = db.connection.cursor()
+    sql = """SELECT d.id,d.names,d.lastName,d.secondLastName,d.edad,d.state,d.idEscuela,d.idPosition,d.idGender
+    FROM docente d 
+    INNER JOIN escuela e ON e.id = d.idEscuela
+    INNER JOIN puesto p ON p.id = d.idPosition
+    INNER JOIN genero g ON g.id = d.idGender;
+    """
+    cursor.execute(sql)
+    docentes = cursor.fetchall()
 
+    sql = "SELECT id,name FROM escuela WHERE state = 1"
+    cursor.execute(sql)
+    escuelas = cursor.fetchall()
+
+    sql = "SELECT id,name FROM puesto WHERE state = 1"
+    cursor.execute(sql)
+    puestos = cursor.fetchall()
+
+    sql = "SELECT id,name FROM genero WHERE state = 1"
+    cursor.execute(sql)
+    generos = cursor.fetchall()
+
+    return render_template('catalogos/docentes.html', docentes=docentes, escuelas=escuelas, puestos=puestos, generos=generos)
+
+
+@app.route('/new-ninos', methods=['POST'])
+@login_required
+def newNinos():
+    cursor = db.connection.cursor()
+    names = request.form['newNames']
+    lastName = request.form['newLastName']
+    secondLastName = request.form['newSecondLastName']
+    edad = request.form['newEdad']
+    idGenero = request.form.get('newGenero')
+    idPuesto = request.form.get('NewPuesto')
+    idEscuela = request.form.get('NewEscuela')
+
+    if request.method == 'POST':
+        sqlIns = """INSERT INTO docente (names, lastName, secondLastName, edad, idGender, idPosition, idEscuela) 
+        VALUES ("{}", "{}", "{}", {}, {}, {}, {})""".format(names, lastName, secondLastName, edad, idGenero, idPuesto, idEscuela)
+        print(sqlIns)
+        cursor.execute(sqlIns)
+        db.connection.commit()
+
+    return redirect(url_for('docentes'))
+
+
+@app.route('/update-ninos/<int:id>', methods=['POST'])
+@login_required
+def updateNinos(id):
+    cursor = db.connection.cursor()
+    names = request.form['updateNames']
+    lastName = request.form['updateLastName']
+    secondLastName = request.form['updateSecondLastName']
+    edad = request.form['updateEdad']
+    idGenero = request.form.get('updateGenero')
+    idPuesto = request.form.get('updatePuesto')
+    idEscuela = request.form.get('updateEscuela')
+    state = request.form.get('btnradio')
+
+    if request.method == 'POST':
+        sql = """update docente set names = "{}", lastName = "{}", secondLastName = "{}",
+                    edad = {}, idGender = {}, idPosition = {}, idEscuela = {}, state = {} where id = {}
+                    """.format(names, lastName, secondLastName, edad, idGenero, idPuesto, idEscuela, state, id)
+        cursor.execute(sql)
+        db.connection.commit()
+
+    return redirect(url_for('docentes'))
 
 #++++++++++++++++++++ Graficas ++++++++++++++++++++
 @app.route('/grafica')
