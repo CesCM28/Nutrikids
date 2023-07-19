@@ -23,6 +23,10 @@ app.config['SECRET_KEY'] = config['development'].SECRET_KEY
 db = MySQL(app)
 login_manager_app = LoginManager(app)
 
+def truncate(n, decimals=0):
+    multiplier = 10**decimals
+    return int(n * multiplier) / multiplier
+
 
 @login_manager_app.user_loader
 def load_user(id):
@@ -320,77 +324,80 @@ def updateDocente(id):
     return redirect(url_for('docentes'))
 
 #++++++++++++++++++++ Alumnos ++++++++++++++++++++
-@app.route('/niños')
+@app.route('/alumnos')
 @login_required
-def ninos():
+def alumnos():
     cursor = db.connection.cursor()
-    sql = """SELECT d.id,d.names,d.lastName,d.secondLastName,d.edad,d.state,d.idEscuela,d.idPosition,d.idGender
-    FROM docente d 
-    INNER JOIN escuela e ON e.id = d.idEscuela
-    INNER JOIN puesto p ON p.id = d.idPosition
-    INNER JOIN genero g ON g.id = d.idGender;
+    sql = """SELECT a.id,a.names,a.lastName,a.secondLastName,a.edadA,a.edadM,a.peso,a.tallacm,a.IMC,a.state,a.idEscuela,a.idGender
+    FROM alumnos a 
+    INNER JOIN escuela e ON e.id = a.idEscuela
+    INNER JOIN genero g ON g.id = a.idGender;
     """
     cursor.execute(sql)
-    docentes = cursor.fetchall()
+    alumnos = cursor.fetchall()
 
     sql = "SELECT id,name FROM escuela WHERE state = 1"
     cursor.execute(sql)
     escuelas = cursor.fetchall()
 
-    sql = "SELECT id,name FROM puesto WHERE state = 1"
-    cursor.execute(sql)
-    puestos = cursor.fetchall()
-
     sql = "SELECT id,name FROM genero WHERE state = 1"
     cursor.execute(sql)
     generos = cursor.fetchall()
 
-    return render_template('catalogos/docentes.html', docentes=docentes, escuelas=escuelas, puestos=puestos, generos=generos)
+    return render_template('catalogos/alumnos.html', alumnos=alumnos, escuelas=escuelas, generos=generos)
 
 
-@app.route('/new-ninos', methods=['POST'])
+@app.route('/new-alumno', methods=['POST'])
 @login_required
-def newNinos():
+def newAlumno():
     cursor = db.connection.cursor()
     names = request.form['newNames']
     lastName = request.form['newLastName']
     secondLastName = request.form['newSecondLastName']
-    edad = request.form['newEdad']
+    edadA = request.form['newEdadA']
+    edadM = request.form['newEdadM']
+    peso = request.form['newPeso']
+    talla = request.form.get('newTalla')
     idGenero = request.form.get('newGenero')
-    idPuesto = request.form.get('NewPuesto')
     idEscuela = request.form.get('NewEscuela')
 
+    IMC = float(peso) / pow((float(talla) / 100 ), 2)
+
     if request.method == 'POST':
-        sqlIns = """INSERT INTO docente (names, lastName, secondLastName, edad, idGender, idPosition, idEscuela) 
-        VALUES ("{}", "{}", "{}", {}, {}, {}, {})""".format(names, lastName, secondLastName, edad, idGenero, idPuesto, idEscuela)
+        sqlIns = """INSERT INTO alumnos (names, lastName, secondLastName, edadA, edadM, peso, tallacm, IMC, idGender, idEscuela) 
+        VALUES ("{}", "{}", "{}", {}, {}, {}, {}, {}, {}, {})""".format(names, lastName, secondLastName, edadA, edadM, peso, talla, truncate(IMC), idGenero, idEscuela)
         print(sqlIns)
         cursor.execute(sqlIns)
         db.connection.commit()
 
-    return redirect(url_for('docentes'))
+    return redirect(url_for('alumnos'))
 
 
-@app.route('/update-ninos/<int:id>', methods=['POST'])
+@app.route('/update-alumno/<int:id>', methods=['POST'])
 @login_required
-def updateNinos(id):
+def updateAlumnos(id):
     cursor = db.connection.cursor()
     names = request.form['updateNames']
     lastName = request.form['updateLastName']
     secondLastName = request.form['updateSecondLastName']
-    edad = request.form['updateEdad']
+    edadA = request.form['updateEdadA']
+    edadM = request.form['updateEdadM']
+    peso = request.form['updatePeso']
+    talla = request.form['updateTalla']
     idGenero = request.form.get('updateGenero')
-    idPuesto = request.form.get('updatePuesto')
     idEscuela = request.form.get('updateEscuela')
     state = request.form.get('btnradio')
 
+    IMC = float(peso) / pow((float(talla) / 100.00 ), 2)
+
     if request.method == 'POST':
-        sql = """update docente set names = "{}", lastName = "{}", secondLastName = "{}",
-                    edad = {}, idGender = {}, idPosition = {}, idEscuela = {}, state = {} where id = {}
-                    """.format(names, lastName, secondLastName, edad, idGenero, idPuesto, idEscuela, state, id)
+        sql = """update alumnos set names = "{}", lastName = "{}", secondLastName = "{}",
+                    edadA = {}, edadM = {}, peso = {}, tallacm = {}, IMC = {}, idGender = {}, idEscuela = {}, state = {} where id = {}
+                    """.format(names, lastName, secondLastName, edadA, edadM, peso, talla, truncate(IMC, 1), idGenero, idEscuela, state, id)
         cursor.execute(sql)
         db.connection.commit()
 
-    return redirect(url_for('docentes'))
+    return redirect(url_for('alumnos'))
 
 #++++++++++++++++++++ Graficas ++++++++++++++++++++
 @app.route('/grafica')

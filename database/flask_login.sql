@@ -74,6 +74,26 @@ CREATE TABLE docente (
     PRIMARY KEY (id)
 );
 
+-- Creacion de la tabl de alumnos
+-- esta relacionada con esculas
+
+CREATE TABLE alumnos (
+    id int NOT NULL AUTO_INCREMENT,
+    idEscuela int, --
+    idGender smallint, --
+    names varchar(100),
+    lastName varchar(50),
+    secondLastName varchar(50),
+    edadA smallint,
+    edadM smallint,
+    peso decimal(5, 2),
+    tallacm int,
+    IMC decimal(5, 1),
+    idResultado int,
+    state tinyint(1) default 1,
+    PRIMARY KEY (id)
+);
+
 -- Volcado de datos para la tabla user
 
 INSERT INTO user (id, username, password, fullname) VALUES

@@ -1,0 +1,320 @@
+{% extends './base.html' %}
+
+{% block title %}Alumnos{% endblock %}
+
+{% block body %}
+<div class="conteiner">
+    <div class="row m-2">
+        <div class="col text-white bg-secondary py-2">Nombres</div>
+        <div class="col text-white bg-secondary py-2">Apellido Paterno</div>
+        <div class="col text-white bg-secondary py-2">Apellido Materno</div>
+        <div class="col text-white bg-secondary py-2">Estado</div>
+        <div class="col text-white bg-secondary py-2"></div>
+    </div>
+    {% for alumno in alumnos %}
+    <div class="row m-2">
+        <div class="col">{{ alumno[1] }}</div>
+        <div class="col">{{ alumno[2] }}</div>
+        <div class="col">{{ alumno[3] }}</div>
+        <div class="col">{% if alumno[9]: %}Activo{% else %}Inactivo {% endif %}</div>
+        <div class="col">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editar"
+                data-bs-id="{{ alumno[0] }}"
+                data-bs-names="{{ alumno[1] }}"
+                data-bs-ln="{{ alumno[2] }}"
+                data-bs-sln="{{ alumno[3] }}"
+                data-bs-edadA="{{ alumno[4] }}"
+                data-bs-edadM="{{ alumno[5] }}"
+                data-bs-peso="{{ alumno[6] }}"
+                data-bs-talla="{{ alumno[7] }}"
+                data-bs-state="{{ alumno[9] }}"
+                data-bs-idescuela="{{ alumno[10] }}"
+                data-bs-idgenero="{{ alumno[11] }}">
+                Actualizar
+            </button> 
+        </div>
+    </div>
+    {% endfor %}
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crear">Nuevo</button>
+</div>
+
+<div class="modal fade" id="crear" tabindex="-1" aria-labelledby="crearLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="crearLabel">Registrar alumno</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario" action="/new-alumno" method="post">
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="newNames" class="col-form-label">Nombres:</label>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" id="newNames" name="newNames">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="newLastName" class="col-form-label">Apellido Paterno:</label>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" id="newLastName" name="newLastName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="newSecondLastName" class="col-form-label">Apellido Materno:</label>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" id="newSecondLastName" name="newSecondLastName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="newEdadA" class="col-form-label">Edad (años):</label>
+                            </div>
+                            <div class="col">
+                                <input type="number" min="2" max="20" placeholder="del 2 al 20" class="form-control" id="newEdadA" name="newEdadA">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="newEdadM">Edad (meses):</label>
+                            <select class="form-select" id="newEdadM" name="newEdadM">
+                                <option value="0">0 meses</option>
+                                <option value="3">3 meses</option>
+                                <option value="6">6 meses</option>
+                                <option value="9">9 meses</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="newPeso" class="col-form-label">Peso (Kg):</label>
+                            </div>
+                            <div class="col">
+                                <input type="number" min="0.00" max="200.00" placeholder="en Kg" class="form-control" id="newPeso" name="newPeso">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="newTalla" class="col-form-label">Talla (cm):</label>
+                            </div>
+                            <div class="col">
+                                <input type="number" min="0" max="250" placeholder="en centimentos" class="form-control" id="newTalla" name="newTalla">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="newGenero">Genero</label>
+                            <select class="form-select" id="newGenero" name="newGenero">
+                            {% for genero in generos %}
+                            <option value="{{ genero[0] }}">{{ genero[1] }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="NewEscuela">Escuela</label>
+                            <select class="form-select" id="NewEscuela" name="NewEscuela">
+                            {% for escuela in escuelas %}
+                            <option value="{{ escuela[0] }}">{{ escuela[1] }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Registrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editar" tabindex="-1" aria-labelledby="editarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editarLabel">Actualizar alumno</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateFormulario" action="" method="post">
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="updateNames" class="col-form-label">Nombres:</label>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" id="updateNames" name="updateNames">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="updateLastName" class="col-form-label">Apellido Paterno:</label>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" id="updateLastName" name="updateLastName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="updateSecondLastName" class="col-form-label">Apellido Materno:</label>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" id="updateSecondLastName" name="updateSecondLastName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="updateEdadA" class="col-form-label">Edad (años):</label>
+                            </div>
+                            <div class="col">
+                                <input type="number" min="2" max="20" placeholder="del 2 al 20" class="form-control" id="updateEdadA" name="updateEdadA">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="updateEdadM">Edad (meses):</label>
+                            <select class="form-select" id="updateEdadM" name="updateEdadM">
+                                <option value="0">0 meses</option>
+                                <option value="3">3 meses</option>
+                                <option value="6">6 meses</option>
+                                <option value="9">9 meses</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="updatePeso" class="col-form-label">Peso (Kg):</label>
+                            </div>
+                            <div class="col">
+                                <input type="number" min="0.00" max="200.00" placeholder="en Kg" class="form-control" id="updatePeso" name="updatePeso">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="updateTalla" class="col-form-label">Talla (cm):</label>
+                            </div>
+                            <div class="col">
+                                <input type="number" min="0" max="250" placeholder="en centimentos" class="form-control" id="updateTalla" name="updateTalla">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="updateGenero">Genero</label>
+                            <select class="form-select" id="updateGenero" name="updateGenero">
+                            {% for genero in generos %}
+                            <option value="{{ genero[0] }}">{{ genero[1] }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="updateEscuela">Escuela</label>
+                            <select class="form-select" id="updateEscuela" name="updateEscuela">
+                            {% for escuela in escuelas %}
+                            <option value="{{ escuela[0] }}">{{ escuela[1] }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="btnradio" id="activo" autocomplete="off" value="true">
+                            <label class="btn btn-outline-success" for="activo">Activo</label>
+                            
+                            <input type="radio" class="btn-check" name="btnradio" id="inactivo" autocomplete="off" value="false">
+                            <label class="btn btn-outline-danger" for="inactivo">Inactivo</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Actualizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const exampleModal = document.getElementById('editar');
+    if (exampleModal) {
+        exampleModal.addEventListener('show.bs.modal', event => {
+            // Button that triggered the modal
+            const button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            const id = button.getAttribute('data-bs-id')
+            const names = button.getAttribute('data-bs-names')
+            const ln = button.getAttribute('data-bs-ln')
+            const sln = button.getAttribute('data-bs-sln')
+            const edadA = button.getAttribute('data-bs-edadA')
+            const edadM = button.getAttribute('data-bs-edadM')
+            const peso = button.getAttribute('data-bs-peso')
+            const talla = button.getAttribute('data-bs-talla')
+            const state = button.getAttribute('data-bs-state')
+            const idEscuela = button.getAttribute('data-bs-idescuela')
+            const idGenero = button.getAttribute('data-bs-idgenero')
+
+            console.log(state)
+
+            if (state == 1) {
+                exampleModal.querySelector('#activo').setAttribute('checked', '')
+            } else {
+                exampleModal.querySelector('#inactivo').setAttribute('checked', '')
+            }
+            // If necessary, you could initiate an Ajax request here
+            // and then do the updating in a callback.
+
+            // Update the modal's content.
+            const modalTitle = exampleModal.querySelector('.modal-title')
+            const inputNames = exampleModal.querySelector('#updateNames')
+            const inputLN = exampleModal.querySelector('#updateLastName')
+            const inputSLN = exampleModal.querySelector('#updateSecondLastName')
+            const inputEdadA = exampleModal.querySelector('#updateEdadA')
+            const inputEdadM = exampleModal.querySelector('#updateEdadM')
+            const inputPeso = exampleModal.querySelector('#updatePeso')
+            const inputTalla = exampleModal.querySelector('#updateTalla')
+            const inputEscuela = exampleModal.querySelector('#updateEscuela')
+            const inputGenero = exampleModal.querySelector('#updateGenero')
+            const form = exampleModal.querySelector('#updateFormulario')
+
+            modalTitle.textContent = `Actualizar ${names}`
+            inputNames.value = names
+            inputLN.value = ln
+            inputSLN.value = sln
+            inputEdadA.value = edadA
+            inputEdadM.value = edadM
+            inputPeso.value = peso
+            inputTalla.value = talla
+            inputEscuela.value = idEscuela
+            inputGenero.value = idGenero
+            form.setAttribute('action', `/update-alumno/${id}`)
+        })
+    }
+</script>
+{% endblock %}
