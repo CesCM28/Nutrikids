@@ -328,7 +328,7 @@ def updateDocente(id):
 @login_required
 def alumnos():
     cursor = db.connection.cursor()
-    sql = """SELECT a.id,a.names,a.lastName,a.secondLastName,a.edadA,a.edadM,a.peso,a.tallacm,a.IMC,a.state,a.idEscuela,a.idGender
+    sql = """SELECT a.id,a.names,a.lastName,a.secondLastName,a.edadA,a.edadM,a.peso,a.tallacm,a.IMC,a.state,a.idEscuela,a.idGender,a.idGrado,a.grupo
     FROM alumnos a 
     INNER JOIN escuela e ON e.id = a.idEscuela
     INNER JOIN genero g ON g.id = a.idGender;
@@ -360,13 +360,20 @@ def newAlumno():
     talla = request.form.get('newTalla')
     idGenero = request.form.get('newGenero')
     idEscuela = request.form.get('NewEscuela')
+    idGrado = request.form['newGrado']
+    grupo = request.form['newGrupo']
 
     IMC = float(peso) / pow((float(talla) / 100 ), 2)
 
+    conSql = "select * from resultados where idGenero = {} and edad = {} and {} between IMCmin and IMCmax;".format(idGenero, edadA, IMC)
+    cursor.execute(conSql)
+    resultado = cursor.fetchone()
+
+    idResultado = resultado[0]
+
     if request.method == 'POST':
-        sqlIns = """INSERT INTO alumnos (names, lastName, secondLastName, edadA, edadM, peso, tallacm, IMC, idGender, idEscuela) 
-        VALUES ("{}", "{}", "{}", {}, {}, {}, {}, {}, {}, {})""".format(names, lastName, secondLastName, edadA, edadM, peso, talla, truncate(IMC), idGenero, idEscuela)
-        print(sqlIns)
+        sqlIns = """INSERT INTO alumnos (names, lastName, secondLastName, edadA, edadM, peso, tallacm, IMC, idGender, idEscuela, idResultado, idGrado, grupo) 
+        VALUES ("{}", "{}", "{}", {}, {}, {}, {}, {}, {}, {}, {}, {}, "{}")""".format(names, lastName, secondLastName, edadA, edadM, peso, talla, truncate(IMC), idGenero, idEscuela, idResultado, idGrado, grupo)
         cursor.execute(sqlIns)
         db.connection.commit()
 
@@ -387,13 +394,22 @@ def updateAlumnos(id):
     idGenero = request.form.get('updateGenero')
     idEscuela = request.form.get('updateEscuela')
     state = request.form.get('btnradio')
+    idGrado = request.form['updateGrado']
+    grupo = request.form['updateGrupo']
 
     IMC = float(peso) / pow((float(talla) / 100.00 ), 2)
 
+    conSql = "select * from resultados where idGenero = {} and edad = {} and {} between IMCmin and IMCmax;".format(idGenero, edadA, IMC)
+    cursor.execute(conSql)
+    resultado = cursor.fetchone()
+
+    idResultado = resultado[0]
+
     if request.method == 'POST':
         sql = """update alumnos set names = "{}", lastName = "{}", secondLastName = "{}",
-                    edadA = {}, edadM = {}, peso = {}, tallacm = {}, IMC = {}, idGender = {}, idEscuela = {}, state = {} where id = {}
-                    """.format(names, lastName, secondLastName, edadA, edadM, peso, talla, truncate(IMC, 1), idGenero, idEscuela, state, id)
+                    edadA = {}, edadM = {}, peso = {}, tallacm = {}, IMC = {}, idGender = {},
+                    idEscuela = {}, idResultado = {}, state = {}, idGrado = {}, grupo = "{}" where id = {}
+                    """.format(names, lastName, secondLastName, edadA, edadM, peso, talla, truncate(IMC, 1), idGenero, idEscuela, idResultado, state, idGrado, grupo, id)
         cursor.execute(sql)
         db.connection.commit()
 
@@ -403,28 +419,46 @@ def updateAlumnos(id):
 @app.route('/grafica')
 @login_required
 def grafica():
-    #kg / estatura en metos al cuadrado
-    #imc = kg / pow(estaturaMetros, 2)
+    cursor = db.connection.cursor()
+
+    conSql = """select resultado,count(resultado) from alumnos a 
+            inner join resultados r on a.idResultado = r.id
+            group by resultado"""
+    cursor.execute(conSql)
+    resultado = cursor.fetchall()
+
+    d, pn, sp, o = 0, 0, 0, 0
+    
+    for res in resultado:
+        if res[0] == 'DESNUTRICION':
+            d = res[1]
+        elif res[0] == 'PESO NORMAL':
+            pn = res[1]
+        elif res[0] == 'SOBRE PESO':
+            sp = res[1]
+        elif res[0] == 'OBESIDAD':
+            o = res[1]
+
 
     variable = {
-        'label': 'Uno',
-        'data': [19.5,19,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
-        'fill': False,
-        'borderColor': 'rgb(75, 192, 192)',
-        'tension': 0.1
-    }
-
-    dataset = {
-        'label': 'Otro',
-        'data': [19,18,17,18,19,2,2,2,2,2,2,2,2,2,2,2],
-        'fill': False,
-        'borderColor': 'rgb(75, 0, 192)',
-        'tension': 0.1
+        'label': '# de niños',
+        'data': [d, pn, sp, o],
+        'backgroundColor': [
+            'rgb(75, 192, 192)',
+            'rgb(0, 192, 192)',
+            'rgb(75, 0, 192)',
+            'rgb(75, 192, 1)'
+        ],
+        'borderColor': [
+            'rgb(75, 192, 192)',
+            'rgb(0, 192, 192)',
+            'rgb(75, 0, 192)',
+            'rgb(75, 192, 1)'
+        ]
     }
 
     return render_template('graficas/grafica.html', 
-                           variable=json.dumps(variable),
-                           dataset2=json.dumps(dataset))
+                           variable=json.dumps(variable))
 
 #++++++++++++++++++++ Graficas ++++++++++++++++++++
 

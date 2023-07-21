@@ -18,26 +18,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const dataset = JSON.parse({{ variable | tojson }})
-    const dataset2 = JSON.parse({{ dataset2 | tojson }})
     
   const ctx = document.getElementById('myChart');
     
     new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16','17'],
-        datasets: [
-        dataset,
-        dataset2
-        ]
-    },
-    options: {
-        scales: {
-        y: {
-            beginAtZero: true
+        type: 'bar',
+        data: {
+            labels: ['DESNUTRICION', 'PESO NORMAL', 'SOBRE PESO', 'OBESIDAD'],
+            datasets: [dataset]
         }
-        }
-    }
     });
 
   </script>

@@ -89,10 +89,25 @@ CREATE TABLE alumnos (
     peso decimal(5, 2),
     tallacm int,
     IMC decimal(5, 1),
+    idGrado smallint,
+    grupo varchar(1),
     idResultado int,
     state tinyint(1) default 1,
     PRIMARY KEY (id)
 );
+
+-- Creación de la tabla de resultas
+
+CREATE TABLE resultados (
+    id int NOT NULL AUTO_INCREMENT,
+    IdGenero int,
+    edad smallint,
+    IMCmin decimal(5, 1),
+    IMCmax decimal(5, 1),
+    resultado varchar(30),
+    state tinyint(1) default 1,
+    PRIMARY KEY (id)
+)
 
 -- Volcado de datos para la tabla user
 

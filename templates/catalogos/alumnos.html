@@ -4,18 +4,78 @@
 
 {% block body %}
 <div class="conteiner">
+    <form method="get">
+        <div class="row m-2">
+            <div class="col">
+                <label for="nom" class="col-form-label">Nombres:</label>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="nom" name="nom">
+            </div>
+            <div class="col">
+                <label for="ape" class="col-form-label">Apellidos:</label>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="ape" name="ape">
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="gen">Genero</label>
+                    <select class="form-select" id="gen" name="gen">
+                    {% for genero in generos %}
+                    <option value="{{ genero[0] }}">{{ genero[1] }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="esc">Escuela</label>
+                    <select class="form-select" id="esc" name="esc">
+                    {% for escuela in escuelas %}
+                    <option value="{{ escuela[0] }}">{{ escuela[1] }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <!--
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="esc">Grado</label>
+                    <select class="form-select" id="esc" name="esc">
+                    {% for escuela in escuelas %}
+                    <option value="{{ escuela[0] }}">{{ escuela[1] }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+            </div>
+            -->
+            <div class="col">
+                <button type="submit" class="btn btn-success">Buscar</button>
+            </div>
+        </div>
+    </form>
+    
     <div class="row m-2">
         <div class="col text-white bg-secondary py-2">Nombres</div>
-        <div class="col text-white bg-secondary py-2">Apellido Paterno</div>
-        <div class="col text-white bg-secondary py-2">Apellido Materno</div>
+        <div class="col text-white bg-secondary py-2">Apellidos</div>
+        <div class="col text-white bg-secondary py-2">Edad</div>
+        <div class="col text-white bg-secondary py-2">Peso (kg)</div>
+        <div class="col text-white bg-secondary py-2">Talla (cm)</div>
+        <div class="col text-white bg-secondary py-2">Grado</div>
+        <div class="col text-white bg-secondary py-2">IMC</div>
         <div class="col text-white bg-secondary py-2">Estado</div>
         <div class="col text-white bg-secondary py-2"></div>
     </div>
     {% for alumno in alumnos %}
     <div class="row m-2">
         <div class="col">{{ alumno[1] }}</div>
-        <div class="col">{{ alumno[2] }}</div>
-        <div class="col">{{ alumno[3] }}</div>
+        <div class="col">{{ alumno[2] }} {{ alumno[3] }}</div>
+        <div class="col">{{ alumno[4] }} años {{ alumno[5] }} meses</div>
+        <div class="col">{{ alumno[6] }}</div>
+        <div class="col">{{ alumno[7] }}</div>
+        <div class="col">{{ alumno[12] }} {{ alumno[13] }}</div>
+        <div class="col">{{ alumno[8] }}</div>
         <div class="col">{% if alumno[9]: %}Activo{% else %}Inactivo {% endif %}</div>
         <div class="col">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editar"
@@ -29,7 +89,9 @@
                 data-bs-talla="{{ alumno[7] }}"
                 data-bs-state="{{ alumno[9] }}"
                 data-bs-idescuela="{{ alumno[10] }}"
-                data-bs-idgenero="{{ alumno[11] }}">
+                data-bs-idgenero="{{ alumno[11] }}"
+                data-bs-idgrado="{{ alumno[12] }}"
+                data-bs-grupo="{{ alumno[13] }}">
                 Actualizar
             </button> 
         </div>
@@ -135,6 +197,29 @@
                             {% for escuela in escuelas %}
                             <option value="{{ escuela[0] }}">{{ escuela[1] }}</option>
                             {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="newGrado">Grado</label>
+                            <select class="form-select" id="newGrado" name="newGrado">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="newGrupo">Grupo</label>
+                            <select class="form-select" id="newGrupo" name="newGrupo">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
                             </select>
                         </div>
                     </div>
@@ -246,6 +331,29 @@
                         </div>
                     </div>
                     <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="updateGrado">Grado</label>
+                            <select class="form-select" id="updateGrado" name="updateGrado">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <label class="input-group-text" for="updateGrupo">Grupo</label>
+                            <select class="form-select" id="updateGrupo" name="updateGrupo">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
                             <input type="radio" class="btn-check" name="btnradio" id="activo" autocomplete="off" value="true">
                             <label class="btn btn-outline-success" for="activo">Activo</label>
@@ -279,6 +387,8 @@
             const state = button.getAttribute('data-bs-state')
             const idEscuela = button.getAttribute('data-bs-idescuela')
             const idGenero = button.getAttribute('data-bs-idgenero')
+            const idGrado = button.getAttribute('data-bs-idgrado')
+            const grupo = button.getAttribute('data-bs-grupo')
 
             console.log(state)
 
@@ -301,6 +411,8 @@
             const inputTalla = exampleModal.querySelector('#updateTalla')
             const inputEscuela = exampleModal.querySelector('#updateEscuela')
             const inputGenero = exampleModal.querySelector('#updateGenero')
+            const inputGrado = exampleModal.querySelector('#updateGrado')
+            const inputGrupo = exampleModal.querySelector('#updateGrupo')
             const form = exampleModal.querySelector('#updateFormulario')
 
             modalTitle.textContent = `Actualizar ${names}`
@@ -313,6 +425,8 @@
             inputTalla.value = talla
             inputEscuela.value = idEscuela
             inputGenero.value = idGenero
+            inputGrado.value = idGrado
+            inputGrupo.value = grupo
             form.setAttribute('action', `/update-alumno/${id}`)
         })
     }
