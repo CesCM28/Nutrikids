@@ -8,6 +8,74 @@
 
 {% block body %}
 <div class="conteiner text-center">
+    <form id="grafica" action="graficas" method="post">
+        <div class="row mb-2">
+            <div class="col"></div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="tipoGrafica">Tipo de Grafica:</label>
+                    <select class="form-select" id="tipoGrafica" name="tipoGrafica">
+                        <option value="1" selected>Todos</option>
+                        <option value="2">Escuela</option>
+                        <option value="3">Grado</option>
+                        <option value="4">Grupo</option>
+                        
+                    </select>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col"></div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="escuela">Escuela:</label>
+                    <select class="form-select" id="escuela" name="escuela">
+                        <option value="0" selected>Todos</option>
+                        {% for escuela in escuelas %}
+                        <option value="{{ escuela[0] }}">{{ escuela[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col"></div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="grado">Grado</label>
+                    <select class="form-select" id="grado" name="grado">
+                        <option value="0" selected>Ninguno</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col"></div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="grupo">Grupo</label>
+                    <select class="form-select" id="grupo" name="grupo">
+                        <option value="0" selected>Ninguno</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-success">Generar grafica</button>
+            </div>
+        </div>
+    </form>
     <div class="row">
         <div class="col"></div>
         <div class="col"><canvas id="myChart" width="100" height="100"></canvas></div>

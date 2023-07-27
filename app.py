@@ -416,14 +416,42 @@ def updateAlumnos(id):
     return redirect(url_for('alumnos'))
 
 #++++++++++++++++++++ Graficas ++++++++++++++++++++
-@app.route('/grafica')
+@app.route('/graficas', methods=['POST', 'GET'])
 @login_required
-def grafica():
+def graficas():
     cursor = db.connection.cursor()
 
-    conSql = """select resultado,count(resultado) from alumnos a 
-            inner join resultados r on a.idResultado = r.id
-            group by resultado"""
+    sql = "SELECT id,name FROM escuela WHERE state = 1"
+    cursor.execute(sql)
+    escuelas = cursor.fetchall()
+
+    if request.method == 'POST'  and request.form["tipoGrafica"] != '1':
+        if request.form["tipoGrafica"] == '2':
+            conSql = """select resultado,count(resultado) from alumnos a 
+                inner join resultados r on a.idResultado = r.id
+                where a.idEscuela = {}
+                group by resultado""".format(request.form["escuela"])
+            
+        if request.form["tipoGrafica"] == '3':
+            conSql = """select resultado,count(resultado) from alumnos a 
+                inner join resultados r on a.idResultado = r.id
+                where a.idGrado = {}
+                    and (a.idEscuela = {} or {} = 0)
+                group by resultado""".format(request.form["grado"], request.form["escuela"], request.form["escuela"])
+            
+        if request.form["tipoGrafica"] == '4':
+            conSql = """select resultado,count(resultado) from alumnos a 
+                inner join resultados r on a.idResultado = r.id
+                where a.grupo = "{}"
+                    and (a.idGrado = {} or {} = 0)
+                    and (a.idEscuela = {} or {} = 0)
+                group by resultado""".format(request.form["grupo"], request.form["grado"], request.form["grado"], request.form["escuela"], request.form["escuela"])
+
+    else:
+        conSql = """select resultado,count(resultado) from alumnos a 
+                inner join resultados r on a.idResultado = r.id
+                group by resultado"""
+    
     cursor.execute(conSql)
     resultado = cursor.fetchall()
 
@@ -457,8 +485,7 @@ def grafica():
         ]
     }
 
-    return render_template('graficas/grafica.html', 
-                           variable=json.dumps(variable))
+    return render_template('graficas/grafica.html', escuelas=escuelas, variable=json.dumps(variable))
 
 #++++++++++++++++++++ Graficas ++++++++++++++++++++
 
