@@ -1,3 +1,7 @@
+create database nutrikids;
+
+use nutrikids;
+
 -- Creación de la table de user
 
 CREATE TABLE user (
@@ -7,6 +11,21 @@ CREATE TABLE user (
   fullname varchar(50) NOT NULL,
   PRIMARY KEY (id)
 );
+
+CREATE TABLE estados (
+    id int NOT NULL AUTO_INCREMENT,
+    name varchar(100) NOT NULL,
+    state tinyint(1) default 1,
+    PRIMARY KEY (id)
+); 
+
+CREATE TABLE municipio (
+    id int NOT NULL AUTO_INCREMENT,
+    idEstado int,
+    name varchar(100) NOT NULL,
+    state tinyint(1) default 1,
+    PRIMARY KEY (id)
+); 
 
 -- Creación de la table de colonia,
 -- esta relacionada con Municipio
@@ -69,7 +88,7 @@ CREATE TABLE docente (
     names varchar(100),
     lastName varchar(50),
     secondLastName varchar(50),
-    edad number,
+    edad smallint,
     state tinyint(1) default 1,
     PRIMARY KEY (id)
 );

@@ -419,6 +419,13 @@ def updateAlumnos(id):
 @app.route('/graficas', methods=['POST', 'GET'])
 @login_required
 def graficas():
+    filtros = {
+        "tipoGrafica": "1",
+        "escuela": "0",
+        "grado": "0",
+        "grupo": "0"
+    }
+
     cursor = db.connection.cursor()
 
     sql = "SELECT id,name FROM escuela WHERE state = 1"

@@ -5,13 +5,47 @@
 {% block body %}
 <div class="container">
     <div class="row text-center">
-        <div class="col w-100 m-3"><a class="" href="{{ url_for('estados') }}"><img src="{{ url_for('static', filename='img/estado.png') }}" width="50px" alt="Estado" /></a></div>
-        <div class="col w-100 m-3"><a class="" href="{{ url_for('municipios') }}"><img src="{{ url_for('static', filename='img/municipio.png') }}" width="50px" alt="Municipio" /></a></div>
-        <div class="col w-100 m-3"><a class="" href="{{ url_for('colonias') }}"><img src="{{ url_for('static', filename='img/colonia.png') }}" width="50px" alt="Colonia" /></a></div>
-        <div class="col w-100 m-3"><a class="" href="{{ url_for('escuelas') }}"><img src="{{ url_for('static', filename='img/escuela.png') }}" width="50px" alt="Escuelas" /></a></div>
-        <div class="col w-100 m-3"><a class="" href="{{ url_for('docentes') }}"><img src="{{ url_for('static', filename='img/docente.png') }}" width="50px" alt="Docentes" /></a></div>
-        <div class="col w-100 m-3"><a class="" href="{{ url_for('alumnos') }}"><img src="{{ url_for('static', filename='img/estudiantes.png') }}" width="50px" alt="Alumnos" /></a></div>
-        <div class="col w-100 m-3"><a class="" href="{{ url_for('graficas') }}"><img src="{{ url_for('static', filename='img/grafico.png') }}" width="50px" alt="Graficas" /></a></div>
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('estados') }}">
+                <img src="{{ url_for('static', filename='img/estado.png') }}" width="100px" alt="Estado" /><br>
+                <label>Estado</label>
+            </a>
+        </div>
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('municipios') }}">
+                <img src="{{ url_for('static', filename='img/municipio.png') }}" width="100px" alt="Municipio" /><br>
+                <label>Municipio</label>
+            </a>
+        </div>
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('colonias') }}">
+                <img src="{{ url_for('static', filename='img/colonia.png') }}" width="100px" alt="Colonia" /><br>
+                <label>Colonia</label>
+            </a></div>
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('escuelas') }}">
+                <img src="{{ url_for('static', filename='img/escuela.png') }}" width="100px" alt="Escuelas" /><br>
+                <label>Escuelas</label>
+            </a>
+        </div>
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('docentes') }}">
+                <img src="{{ url_for('static', filename='img/docente.png') }}" width="100px" alt="Docentes" /><br>
+                <label>Docentes</label>
+            </a>
+        </div>
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('alumnos') }}">
+                <img src="{{ url_for('static', filename='img/estudiantes.png') }}" width="100px" alt="Alumnos" /><br>
+                <label>Alumnos</label>
+            </a>
+        </div>
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('graficas') }}">
+                <img src="{{ url_for('static', filename='img/grafico.png') }}" width="100px" alt="Graficas" /><br>
+                <label>Graficas</label>
+            </a>
+        </div>
     </div>
     <div class="row text-center">
         
