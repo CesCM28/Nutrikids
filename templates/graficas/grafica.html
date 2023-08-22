@@ -85,9 +85,19 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const dataset = JSON.parse({{ variable | tojson }})
     
-  const ctx = document.getElementById('myChart');
+    const tipoGrafica = document.querySelector('#tipoGrafica');
+    const escuela = document.querySelector('#escuela');
+    const grado = document.querySelector('#grado');
+    const grupo = document.querySelector('#grupo');
+
+    tipoGrafica.value = {{ filtros['tipoGrafica'] }};
+    escuela.value = {{ filtros['escuela'] }};
+    grado.value = {{ filtros['grado'] }};
+    grupo.value = '{{ filtros['grupo'] }}';
+
+    const dataset = JSON.parse({{ variable | tojson }});
+    const ctx = document.getElementById('myChart');
     
     new Chart(ctx, {
         type: 'bar',

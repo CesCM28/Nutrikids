@@ -432,7 +432,12 @@ def graficas():
     cursor.execute(sql)
     escuelas = cursor.fetchall()
 
-    if request.method == 'POST'  and request.form["tipoGrafica"] != '1':
+    if request.method == 'POST' and request.form["tipoGrafica"] != '1':
+        filtros['tipoGrafica'] = request.form["tipoGrafica"]
+        filtros['escuela'] = request.form["escuela"]
+        filtros['grado'] = request.form["grado"]
+        filtros['grupo'] = request.form["grupo"]
+
         if request.form["tipoGrafica"] == '2':
             conSql = """select resultado,count(resultado) from alumnos a 
                 inner join resultados r on a.idResultado = r.id
@@ -492,7 +497,7 @@ def graficas():
         ]
     }
 
-    return render_template('graficas/grafica.html', escuelas=escuelas, variable=json.dumps(variable))
+    return render_template('graficas/grafica.html', escuelas=escuelas, filtros=filtros, variable=json.dumps(variable))
 
 #++++++++++++++++++++ Graficas ++++++++++++++++++++
 
