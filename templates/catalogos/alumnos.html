@@ -4,7 +4,7 @@
 
 {% block body %}
 <div class="conteiner">
-    <form method="get">
+    <form method="post">
         <div class="row m-2">
             <div class="col">
                 <label for="nom" class="col-form-label">Nombres:</label>
@@ -389,8 +389,6 @@
             const idGenero = button.getAttribute('data-bs-idgenero')
             const idGrado = button.getAttribute('data-bs-idgrado')
             const grupo = button.getAttribute('data-bs-grupo')
-
-            console.log(state)
 
             if (state == 1) {
                 exampleModal.querySelector('#activo').setAttribute('checked', '')

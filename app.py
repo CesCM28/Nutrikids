@@ -324,15 +324,32 @@ def updateDocente(id):
     return redirect(url_for('docentes'))
 
 #++++++++++++++++++++ Alumnos ++++++++++++++++++++
-@app.route('/alumnos')
+@app.route('/alumnos', methods=['POST', 'GET'])
 @login_required
 def alumnos():
     cursor = db.connection.cursor()
-    sql = """SELECT a.id,a.names,a.lastName,a.secondLastName,a.edadA,a.edadM,a.peso,a.tallacm,a.IMC,a.state,a.idEscuela,a.idGender,a.idGrado,a.grupo
-    FROM alumnos a 
-    INNER JOIN escuela e ON e.id = a.idEscuela
-    INNER JOIN genero g ON g.id = a.idGender;
-    """
+
+    if request.method == 'POST':
+        nombre = request.form['nom']
+        apellidos = request.form['ape']
+        genero = request.form['gen']
+        escuela = request.form['esc']
+        sql = """SELECT a.id,a.names,a.lastName,a.secondLastName,a.edadA,a.edadM,a.peso,a.tallacm,a.IMC,a.state,a.idEscuela,a.idGender,a.idGrado,a.grupo
+        FROM alumnos a 
+            INNER JOIN escuela e ON e.id = a.idEscuela
+            INNER JOIN genero g ON g.id = a.idGender
+        WHERE a.idEscuela = {} and a.idGender = {} and a.names like '%{}%'
+            and (a.lastName like '%{}%' or a.secondLastName like '%{}%');
+        """.format(escuela, genero, nombre, apellidos, apellidos)
+        print('sql')
+
+    else:
+        sql = """SELECT a.id,a.names,a.lastName,a.secondLastName,a.edadA,a.edadM,a.peso,a.tallacm,a.IMC,a.state,a.idEscuela,a.idGender,a.idGrado,a.grupo
+        FROM alumnos a 
+        INNER JOIN escuela e ON e.id = a.idEscuela
+        INNER JOIN genero g ON g.id = a.idGender;
+        """
+
     cursor.execute(sql)
     alumnos = cursor.fetchall()
 
