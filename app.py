@@ -294,7 +294,6 @@ def newDocente():
     if request.method == 'POST':
         sqlIns = """INSERT INTO docente (names, lastName, secondLastName, edad, idGender, idPosition, idEscuela) 
         VALUES ("{}", "{}", "{}", {}, {}, {}, {})""".format(names, lastName, secondLastName, edad, idGenero, idPuesto, idEscuela)
-        print(sqlIns)
         cursor.execute(sqlIns)
         db.connection.commit()
 
@@ -341,8 +340,6 @@ def alumnos():
         WHERE a.idEscuela = {} and a.idGender = {} and a.names like '%{}%'
             and (a.lastName like '%{}%' or a.secondLastName like '%{}%');
         """.format(escuela, genero, nombre, apellidos, apellidos)
-        print('sql')
-
     else:
         sql = """SELECT a.id,a.names,a.lastName,a.secondLastName,a.edadA,a.edadM,a.peso,a.tallacm,a.IMC,a.state,a.idEscuela,a.idGender,a.idGrado,a.grupo
         FROM alumnos a 
@@ -433,6 +430,252 @@ def updateAlumnos(id):
     return redirect(url_for('alumnos'))
 
 #++++++++++++++++++++ Graficas ++++++++++++++++++++
+@app.route('/menuGraficas', methods=['GET'])
+@login_required
+def menuGraficas():
+    return render_template('graficas/graficas.html')
+
+
+@app.route('/graficapeso', methods=['POST', 'GET'])
+@login_required
+def graficapeso():
+    filtros = {
+        "tipoGrafica": "1",
+        "escuela": "0",
+        "grado": "0",
+        "grupo": "0"
+    }
+
+    cursor = db.connection.cursor()
+
+    sql = "SELECT id,name FROM escuela WHERE state = 1"
+    cursor.execute(sql)
+    escuelas = cursor.fetchall()
+
+    if request.method == 'POST' and request.form["tipoGrafica"] != '1':
+        filtros['tipoGrafica'] = request.form["tipoGrafica"]
+        filtros['escuela'] = request.form["escuela"]
+        filtros['grado'] = request.form["grado"]
+        filtros['grupo'] = request.form["grupo"]
+
+        if request.form["tipoGrafica"] == '2':
+            conSql = """select resultado,count(resultado) 
+                    from alumnos a, peso p
+                    where a.peso between p.pesoMin and p.pesoMax
+                    and a.idGender = p.IdGenero
+                    and a.edadA = p.edad
+                    and a.idEscuela = {}
+                    group by resultado""".format(request.form["escuela"])
+            
+        if request.form["tipoGrafica"] == '3':
+            conSql = """select resultado,count(resultado) 
+                    from alumnos a, peso p
+                    where a.peso between p.pesoMin and p.pesoMax
+                    and a.idGender = p.IdGenero
+                    and a.edadA = p.edad
+                    and a.idGrado = {}
+                    and (a.idEscuela = {} or {} = 0)
+                group by resultado""".format(request.form["grado"], request.form["escuela"], request.form["escuela"])
+            
+        if request.form["tipoGrafica"] == '4':
+            conSql = """select resultado,count(resultado) 
+                    from alumnos a, peso p
+                    where a.peso between p.pesoMin and p.pesoMax
+                    and a.idGender = p.IdGenero
+                    and a.edadA = p.edad
+                    and a.grupo = "{}"
+                    and (a.idGrado = {} or {} = 0)
+                    and (a.idEscuela = {} or {} = 0)
+                group by resultado""".format(request.form["grupo"], request.form["grado"], request.form["grado"], request.form["escuela"], request.form["escuela"])
+
+    else:
+        conSql = """select resultado,count(resultado) 
+                    from alumnos a, peso p
+                    where a.peso between p.pesoMin and p.pesoMax
+                    and a.idGender = p.IdGenero
+                    and a.edadA = p.edad
+                    group by resultado"""
+    
+    cursor.execute(conSql)
+    resultado = cursor.fetchall()
+
+    Debajo3, Percentil3, Entre310, Percentil10, Entre1025, Percentil25, Entre2550, Percentil50 = 0, 0, 0, 0, 0, 0, 0, 0
+    Entre5075, Percentil75, Entre7590, Percentil90, Entre9097, Percentil97, Arriba97 = 0, 0, 0, 0, 0, 0, 0
+
+    for res in resultado:
+        if res[0] == 'Debajo 3':
+            Debajo3 = res[1]
+        elif res[0] == 'Percentil 3':
+            Percentil3 = res[1]
+        elif res[0] == 'Entre 3 - 10':
+            Entre310 = res[1]
+        elif res[0] == 'Percentil 10':
+            Percentil10 = res[1]
+        elif res[0] == 'Entre 10 - 25':
+            Entre1025 = res[1]
+        elif res[0] == 'Percentil 25':
+            Percentil25 = res[1]
+        elif res[0] == 'Entre 25 - 50':
+            Entre2550 = res[1]
+        elif res[0] == 'Percentil 50':
+            Percentil50 = res[1]
+        elif res[0] == 'Entre 50 - 75':
+            Entre5075 = res[1]
+        elif res[0] == 'Percentil 75':
+            Percentil75 = res[1]
+        elif res[0] == 'Entre 75 - 90':
+            Entre7590 = res[1]
+        elif res[0] == 'Percentil 90':
+            Percentil90 = res[1]
+        elif res[0] == 'Entre 90 - 97':
+            Entre9097 = res[1]
+        elif res[0] == 'Percentil 97':
+            Percentil97 = res[1]
+        elif res[0] == 'Arriba 97':
+            Arriba97 = res[1]
+
+
+    variable = {
+        'label': '# de niños',
+        'data': [Debajo3, Percentil3, Entre310, Percentil10, Entre1025, Percentil25, Entre2550, Percentil50,
+                Entre5075, Percentil75, Entre7590, Percentil90, Entre9097, Percentil97, Arriba97],
+        'backgroundColor': [
+            'rgb(75, 192, 192)',
+            'rgb(0, 192, 192)',
+            'rgb(75, 0, 192)',
+            'rgb(75, 192, 1)'
+        ],
+        'borderColor': [
+            'rgb(75, 192, 192)',
+            'rgb(0, 192, 192)',
+            'rgb(75, 0, 192)',
+            'rgb(75, 192, 1)'
+        ]
+    }
+
+    return render_template('graficas/graficaPeso.html', escuelas=escuelas, filtros=filtros, variable=json.dumps(variable))
+
+
+@app.route('/graficaestatura', methods=['POST', 'GET'])
+@login_required
+def graficaestatura():
+    filtros = {
+        "tipoGrafica": "1",
+        "escuela": "0",
+        "grado": "0",
+        "grupo": "0"
+    }
+
+    cursor = db.connection.cursor()
+
+    sql = "SELECT id,name FROM escuela WHERE state = 1"
+    cursor.execute(sql)
+    escuelas = cursor.fetchall()
+
+    if request.method == 'POST' and request.form["tipoGrafica"] != '1':
+        filtros['tipoGrafica'] = request.form["tipoGrafica"]
+        filtros['escuela'] = request.form["escuela"]
+        filtros['grado'] = request.form["grado"]
+        filtros['grupo'] = request.form["grupo"]
+
+        if request.form["tipoGrafica"] == '2':
+            conSql = """select resultado,count(resultado) 
+                    from alumnos a, estatura p
+                    where a.tallacm between p.estaturaMin and p.estaturaMax
+                    and a.idGender = p.IdGenero
+                    and a.edadA = p.edad 
+                    and a.idEscuela = {}
+                group by resultado""".format(request.form["escuela"])
+            
+        if request.form["tipoGrafica"] == '3':
+            conSql = """select resultado,count(resultado) 
+                    from alumnos a, estatura p
+                    where a.tallacm between p.estaturaMin and p.estaturaMax
+                    and a.idGender = p.IdGenero
+                    and a.edadA = p.edad 
+                    and a.idGrado = {}
+                    and (a.idEscuela = {} or {} = 0)
+                group by resultado""".format(request.form["grado"], request.form["escuela"], request.form["escuela"])
+            
+        if request.form["tipoGrafica"] == '4':
+            conSql = """select resultado,count(resultado) 
+                    from alumnos a, estatura p
+                    where a.tallacm between p.estaturaMin and p.estaturaMax
+                    and a.idGender = p.IdGenero
+                    and a.edadA = p.edad 
+                    and a.grupo = "{}"
+                    and (a.idGrado = {} or {} = 0)
+                    and (a.idEscuela = {} or {} = 0)
+                group by resultado""".format(request.form["grupo"], request.form["grado"], request.form["grado"], request.form["escuela"], request.form["escuela"])
+
+    else:
+        conSql = """select resultado,count(resultado) 
+                    from alumnos a, estatura p
+                    where a.tallacm between p.estaturaMin and p.estaturaMax
+                    and a.idGender = p.IdGenero
+                    and a.edadA = p.edad
+                    group by resultado"""
+    
+    cursor.execute(conSql)
+    resultado = cursor.fetchall()
+
+    Debajo3, Percentil3, Entre310, Percentil10, Entre1025, Percentil25, Entre2550, Percentil50 = 0, 0, 0, 0, 0, 0, 0, 0
+    Entre5075, Percentil75, Entre7590, Percentil90, Entre9097, Percentil97, Arriba97 = 0, 0, 0, 0, 0, 0, 0
+
+    for res in resultado:
+        if res[0] == 'Debajo 3':
+            Debajo3 = res[1]
+        elif res[0] == 'Percentil 3':
+            Percentil3 = res[1]
+        elif res[0] == 'Entre 3 - 10':
+            Entre310 = res[1]
+        elif res[0] == 'Percentil 10':
+            Percentil10 = res[1]
+        elif res[0] == 'Entre 10 - 25':
+            Entre1025 = res[1]
+        elif res[0] == 'Percentil 25':
+            Percentil25 = res[1]
+        elif res[0] == 'Entre 25 - 50':
+            Entre2550 = res[1]
+        elif res[0] == 'Percentil 50':
+            Percentil50 = res[1]
+        elif res[0] == 'Entre 50 - 75':
+            Entre5075 = res[1]
+        elif res[0] == 'Percentil 75':
+            Percentil75 = res[1]
+        elif res[0] == 'Entre 75 - 90':
+            Entre7590 = res[1]
+        elif res[0] == 'Percentil 90':
+            Percentil90 = res[1]
+        elif res[0] == 'Entre 90 - 97':
+            Entre9097 = res[1]
+        elif res[0] == 'Percentil 97':
+            Percentil97 = res[1]
+        elif res[0] == 'Arriba 97':
+            Arriba97 = res[1]
+
+
+    variable = {
+        'label': '# de niños',
+        'data': [Debajo3, Percentil3, Entre310, Percentil10, Entre1025, Percentil25, Entre2550, Percentil50,
+                Entre5075, Percentil75, Entre7590, Percentil90, Entre9097, Percentil97, Arriba97],
+        'backgroundColor': [
+            'rgb(75, 192, 192)',
+            'rgb(0, 192, 192)',
+            'rgb(75, 0, 192)',
+            'rgb(75, 192, 1)'
+        ],
+        'borderColor': [
+            'rgb(75, 192, 192)',
+            'rgb(0, 192, 192)',
+            'rgb(75, 0, 192)',
+            'rgb(75, 192, 1)'
+        ]
+    }
+
+    return render_template('graficas/graficaEstatura.html', escuelas=escuelas, filtros=filtros, variable=json.dumps(variable))
+
+
 @app.route('/graficas', methods=['POST', 'GET'])
 @login_required
 def graficas():

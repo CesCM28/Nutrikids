@@ -1,0 +1,126 @@
+{% extends './base.html' %}
+
+{% block title %}graficas{% endblock %}
+
+{% block customCSS %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.0/chart.min.js" integrity="sha512-mlz/Fs1VtBou2TrUkGzX4VoGvybkD9nkeXWJm3rle0DPHssYYx4j+8kIS15T78ttGfmOjH0lLaBXGcShaVkdkg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
+
+{% block body %}
+<div class="conteiner text-center">
+    <form id="grafica" action="graficapeso" method="post">
+        <div class="row mb-2">
+            <div class="col"></div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="tipoGrafica">Tipo de Grafica:</label>
+                    <select class="form-select" id="tipoGrafica" name="tipoGrafica">
+                        <option value="1" selected>Todos</option>
+                        <option value="2">Escuela</option>
+                        <option value="3">Grado</option>
+                        <option value="4">Grupo</option>
+                        
+                    </select>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col"></div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="escuela">Escuela:</label>
+                    <select class="form-select" id="escuela" name="escuela">
+                        <option value="0" selected>Todos</option>
+                        {% for escuela in escuelas %}
+                        <option value="{{ escuela[0] }}">{{ escuela[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col"></div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="grado">Grado</label>
+                    <select class="form-select" id="grado" name="grado">
+                        <option value="0" selected>Ninguno</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col"></div>
+            <div class="col">
+                <div class="input-group">
+                    <label class="input-group-text" for="grupo">Grupo</label>
+                    <select class="form-select" id="grupo" name="grupo">
+                        <option value="0" selected>Ninguno</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-success">Generar grafica</button>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col"><canvas id="myChart" width="100" height="100"></canvas></div>
+        <div class="col"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    
+    const tipoGrafica = document.querySelector('#tipoGrafica');
+    const escuela = document.querySelector('#escuela');
+    const grado = document.querySelector('#grado');
+    const grupo = document.querySelector('#grupo');
+
+    tipoGrafica.value = {{ filtros['tipoGrafica'] }};
+    escuela.value = {{ filtros['escuela'] }};
+    grado.value = {{ filtros['grado'] }};
+    grupo.value = '{{ filtros['grupo'] }}';
+
+    const dataset = JSON.parse({{ variable | tojson }});
+    const ctx = document.getElementById('myChart');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Debajo 3',
+                    'Percentil 3',
+                    'Entre 3 - 10',
+                    'Percentil 10',
+                    'Entre 10 - 25',
+                    'Percentil 25',
+                    'Entre 25 - 50',
+                    'Percentil 50',
+                    'Entre 50 - 75',
+                    'Percentil 75',
+                    'Entre 75 - 90',
+                    'Percentil 90',
+                    'Entre 90 - 97',
+                    'Percentil 97',
+                    'Arriba 97',],
+            datasets: [dataset]
+        }
+    });
+
+  </script>
+    
+{% endblock %}

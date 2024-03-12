@@ -12,7 +12,6 @@ class ModelUser():
             cursor.execute(sql)
             row = cursor.fetchone()
 
-            print(row)
             if row != None:
                 user = User(int(row[0]), row[1], User.check_password(row[2], user.password), row[3])
                 return user

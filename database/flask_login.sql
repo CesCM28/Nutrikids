@@ -115,7 +115,7 @@ CREATE TABLE alumnos (
     PRIMARY KEY (id)
 );
 
--- Creación de la tabla de resultas
+-- Creación de la tabla de resultados
 
 CREATE TABLE resultados (
     id int NOT NULL AUTO_INCREMENT,
@@ -127,6 +127,32 @@ CREATE TABLE resultados (
     state tinyint(1) default 1,
     PRIMARY KEY (id)
 )
+
+-- Creación de la tabla de resultados de peso
+
+CREATE TABLE peso (
+    id int NOT NULL AUTO_INCREMENT,
+    IdGenero int,
+    edad smallint,
+    pesoMin decimal(5, 1),
+    pesoMax decimal(5, 1),
+    resultado varchar(30),
+    state tinyint(1) default 1,
+    PRIMARY KEY (id)
+);
+
+-- Creación de la tabla de resultados de estatura
+
+CREATE TABLE estatura (
+    id int NOT NULL AUTO_INCREMENT,
+    IdGenero int,
+    edad smallint,
+    estaturaMin decimal(5, 1),
+    estaturaMax decimal(5, 1),
+    resultado varchar(30),
+    state tinyint(1) default 1,
+    PRIMARY KEY (id)
+);
 
 -- Volcado de datos para la tabla user
 

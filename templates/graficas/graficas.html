@@ -1,0 +1,31 @@
+{% extends './base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row text-center">
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('graficas') }}">
+                <img src="{{ url_for('static', filename='img/grafico.png') }}" width="100px" alt="Graficas" /><br>
+                <label>Grafica Principal</label>
+            </a>
+        </div>
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('graficapeso') }}">
+                <img src="{{ url_for('static', filename='img/grafico.png') }}" width="100px" alt="Graficas" /><br>
+                <label>Grafica de Peso</label>
+            </a>
+        </div>
+        <div class="col w-100 m-3">
+            <a class="text-dark" href="{{ url_for('graficaestatura') }}">
+                <img src="{{ url_for('static', filename='img/grafico.png') }}" width="100px" alt="Graficas" /><br>
+                <label>Graficas de Estatura</label>
+            </a>
+        </div>
+    </div>
+    <div class="row text-center">
+        
+    </div>
+</div>
+{% endblock %}
